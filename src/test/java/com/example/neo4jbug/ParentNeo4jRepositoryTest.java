@@ -31,6 +31,7 @@ public class ParentNeo4jRepositoryTest {
         ChildNode savedChildNode;
 
         ParentNode unsavedParentNode = ParentNode.builder()
+                .id(1L)
                 .childNodes(Set.of(ChildNode.builder().name("child node 1").build()))
                 .build();
 
