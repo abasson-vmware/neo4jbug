@@ -28,27 +28,22 @@ public class ParentNeo4jRepositoryTest {
 
     @Test
     public void itUpdatesAndFetchesParentNodes() {
-        ParentNode unsavedParentNode = new ParentNode();
+        ChildNode savedChildNode;
 
-        ChildNode childNode1 = new ChildNode();
-        childNode1.setName("child node 1");
-
-        unsavedParentNode.setChildNodes(Set.of(childNode1));
+        ParentNode unsavedParentNode = ParentNode.builder()
+                .childNodes(Set.of(ChildNode.builder().name("child node 1").build()))
+                .build();
 
         ParentNode savedParentNode = repository.save(unsavedParentNode);
         assertThat(savedParentNode.getId()).isNotNull();
         assertThat(savedParentNode.getChildNodes()).hasSize(1);
 
-        ChildNode savedChildNode;
         savedChildNode = savedParentNode.getChildNodes().stream().findFirst().get();
         assertThat(savedChildNode.getName()).isEqualTo("child node 1");
 
-        ChildNode childNode2 = new ChildNode();
-        childNode2.setName("child node 2");
-
-        ParentNode parentNodeToUpdate = new ParentNode();
-        parentNodeToUpdate.setId(savedParentNode.getId());
-        parentNodeToUpdate.setChildNodes(Set.of(childNode2));
+        ParentNode parentNodeToUpdate = savedParentNode.toBuilder()
+                .childNodes(Set.of(ChildNode.builder().name("child node 2").build()))
+                .build();
 
         ParentNode updatedParentNode = repository.save(parentNodeToUpdate);
         assertThat(updatedParentNode.getChildNodes()).hasSize(1);
